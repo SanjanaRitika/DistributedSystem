@@ -1,0 +1,96 @@
+.form-control {
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    border: none;
+    height: 38px !important; /* Consistent height */
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px; /* Padding for left and right */
+    border-radius: 8px; /* Rounder corners */
+    max-width: 150px; /* Maximum width for responsiveness */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent text wrap */
+    text-overflow: ellipsis; /* Add ellipsis for long text */
+}
+
+.btn-primary i {
+    margin-right: 5px;
+}
+
+.file-label .file-name {
+    margin-left: 5px;
+    max-width: 80px; /* Adjust based on your layout */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.file-label:hover .file-name {
+    overflow: visible;
+    white-space: normal;
+}
+
+
+.modal-header {
+    background-color: #f8f9fa;
+}
+
+.modal-body {
+    font-size: 1.1rem;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.2s;
+}
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb); /* Gradient background */
+    border-radius: 0 0 15px 15px; /* Rounded bottom corners */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Larger brand text */
+    font-weight: bold; /* Bold brand text */
+}
+
+.nav-link {
+    color: #ffffff !important; /* White text color */
+    padding: 15px 20px; /* Increased padding for better click area */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.nav-link:hover {
+    color: #ffdd57 !important; /* Change text color on hover */
+    text-decoration: underline; /* Underline effect on hover */
+}
+
+.nav-item.active .nav-link {
+    color: #ffdd57 !important; /* Highlight active link */
+    font-weight: bold; /* Bold active link */
+}
+
+
+.form-control {
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+/* Responsive Navbar Styles */
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background-color: #4e54c8; /* Background for mobile view */
+        border-radius: 0 0 15px 15px; /* Rounded corners for mobile dropdown */
+    }
+}

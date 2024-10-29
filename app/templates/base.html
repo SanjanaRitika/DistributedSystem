@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>FastAPI App</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Stack Overflow</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span> <!-- Hamburger icon -->
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto"> <!-- Added ml-auto to push items to the right -->
+                    <li class="nav-item">
+                        <!-- Bell icon triggers the modal -->
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#notificationModal">
+                            <i class="fas fa-bell"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="nav-link disabled" aria-disabled="true"> <!-- Used disabled for styling without a link -->
+                            {{ current_user.first_name }} {{ current_user.last_name }}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="container mt-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% if notifications %}
+                        <ul class="list-group">
+                            {% for notification in notifications %}
+                                <li class="list-group-item">
+                                    {{ notification.message }}
+                                    <br>
+                                    <small class="text-muted">Received on {{ notification.timestamp.strftime("%b %d, %Y, %I:%M %p") }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info" role="alert">
+                            You have no new notifications.
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const notificationModal = document.getElementById("notificationModal");
+
+        // Fetch notifications each time the modal opens
+        $("#notificationModal").on("show.bs.modal", function () {
+            fetchNotifications();
+        });
+
+        // Mark notifications as seen when the modal closes
+        $("#notificationModal").on("hide.bs.modal", function () {
+            fetch("/notifications/mark-seen", { method: "PUT" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        fetchNotifications(); // Refresh notifications list after marking as seen
+                    }
+                })
+                .catch(error => console.error("Error marking notifications as seen:", error));
+        });
+
+        // Function to fetch and display unseen notifications
+        function fetchNotifications() {
+            fetch("/notifications/json")
+                .then(response => response.json())
+                .then(data => displayNotifications(data))  // Display notifications
+                .catch(error => console.error("Error fetching notifications:", error));
+        }
+
+        // Function to display notifications
+        function displayNotifications(data) {
+            const container = document.querySelector("#notificationModal .modal-body .list-group");
+            container.innerHTML = ""; // Clear old notifications
+
+            if (data.length > 0) {
+                data.forEach(notification => {
+                    const notificationElement = document.createElement("li");
+                    notificationElement.classList.add("list-group-item");
+                    notificationElement.innerHTML = `
+                        ${notification.message}
+                        <br>
+                        <small class="text-muted">
+                            Received on ${new Date(notification.timestamp).toLocaleString()}
+                        </small>
+                    `;
+                    container.appendChild(notificationElement);
+                });
+            } else {
+                container.innerHTML = `<div class="alert alert-info" role="alert">You have no new notifications.</div>`;
+            }
+        }
+    });
+
+
+
+</script>
+
+</html>

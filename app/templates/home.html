@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="/post" method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Create a new post..." aria-label="Create a new post" name="post_content">
+
+            <!-- Hidden file input -->
+            <input id="file-upload" type="file" name="file" style="display: none;" onchange="showFileName()">
+
+            <!-- Buttons for attaching file and creating post -->
+            <div class="input-group-append">
+                <label for="file-upload" class="btn btn-primary file-label" id="file-label" title="No file chosen">
+                    <i class="fas fa-paperclip"></i> <span id="file-name">Attach File</span>
+                </label>
+                <button class="btn btn-primary" type="submit">Create Post</button>
+            </div>
+        </div>
+    </form>
+    <div class="posts-container">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">{{ post.content }}</p>
+                        {% if post.file_url %}
+                            <a href="{{ post.file_url }}" target="_blank">{{ post.file_url.split('/')[-1] }}</a><!-- Link to file -->
+                        {% endif %}
+                        <footer class="blockquote-footer">
+                            Posted by {{ post.user.first_name }} {{ post.user.last_name }}
+                            <br>
+                            <small class="text-muted">Posted on {{ post.timestamp.strftime("%b %d, %Y, %I:%M %p") }}</small>
+                        </footer>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                You do not have any posts yet.
+            </div>
+        {% endif %}
+    </div>
+
+
+<!-- JavaScript to display the file name -->
+<script>
+    function showFileName() {
+        const fileInput = document.getElementById('file-upload');
+        const fileLabel = document.getElementById('file-label');
+
+        if (fileInput.files.length > 0) {
+            const fileName = fileInput.files[0].name;
+            fileLabel.innerHTML = `<i class="fas fa-paperclip"></i> ${fileName}`;
+            fileLabel.title = fileName; // Set tooltip to full file name
+        } else {
+            fileLabel.innerHTML = `<i class="fas fa-paperclip"></i> Attach File`;
+            fileLabel.title = "No file chosen";
+        }
+    }
+
+    function updateFileName() {
+        const fileInput = document.getElementById('file-upload');
+        const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file chosen";
+        document.getElementById('file-name').textContent = fileName;
+    };
+</script>
+{% endblock %}

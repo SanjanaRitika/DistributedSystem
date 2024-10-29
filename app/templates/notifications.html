@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Your Notifications</h2>
+    <ul class="list-group">
+        {% for notification in notifications %}
+            <li class="list-group-item">
+                {{ notification.message }} - <small class="text-muted">{{ notification.timestamp }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
